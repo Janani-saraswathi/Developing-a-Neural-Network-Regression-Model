@@ -132,15 +132,13 @@ plt.ylabel("Loss")
 plt.title("Training Loss vs Epochs")
 plt.grid(True)
 plt.show()
+
 ```
+## OUTPUT:
+
 ### Dataset Information
 <img width="255" height="635" alt="image" src="https://github.com/user-attachments/assets/1af7a453-3904-4a3d-bc35-52ac16c746a9" />
 
-
-
-### OUTPUT
-
-<img width="482" height="497" alt="image" src="https://github.com/user-attachments/assets/ef5ee7b8-2ca8-45ff-aa34-00785cc0e9d3" />
 
 
 ### EPOCH:
