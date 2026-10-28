@@ -49,6 +49,7 @@ Use the trained model to predict  for a new input value .
 ### Register Number:212225230110
 
 ```
+#%% packages
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
@@ -58,20 +59,35 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-df=pd.read_csv(r"C:\Users\acer\Downloads\Exp-1.csv")
+
+
+#%% import data
+df=pd.read_csv("C:\\Users\\PriyaB\\Downloads\\PyTorch-Ultimate-2023---From-Basics-to-Cutting-Edge\\010_DeepLearningIntro\\Exp-1.csv")
 df
+
+
+# %% separate independent / dependent features
 x=df[["Input"]].values
 y=df[["Output"]].values
+
+# %% Train / Test Split
 xt,xst,yt,yst=train_test_split(x,y,test_size=0.2,random_state=52) # check if requires_grad is true, false if not directly specified
+
+
+#%% scale the data
 scale1=MinMaxScaler()
 scale2=MinMaxScaler()
 xt=scale1.fit_transform(xt)
 xst=scale1.transform(xst)
 
+
 xt=torch.FloatTensor(xt)
 xst=torch.FloatTensor(xst)
 yt=torch.FloatTensor(yt)
 yst=torch.FloatTensor(yst)
+
+
+# %% simple network
 class neuralNetwork(nn.Module):
     def __init__(self):
         super().__init__()
@@ -87,10 +103,14 @@ class neuralNetwork(nn.Module):
     def forward(self, x):
         return self.network(x)
 
+# %% create model
 model=neuralNetwork()
 criterion=nn.MSELoss()
 optimizer=torch.optim.Adam(model.parameters(),lr=0.01)
 
+
+
+# %% training
 epochs=5000
 losses=[]
 
@@ -116,11 +136,14 @@ with torch.no_grad():
     test_loss=criterion(predictions_l,yst)
     print(f"test loss: {test_loss.item()}")
 
+# %% plot
 plt.plot(losses)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Loss during training")
 plt.show()
+
+
 
 
 ```
