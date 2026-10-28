@@ -149,7 +149,9 @@ plt.show()
 ### New Sample Data Prediction
 
 <img width="237" height="193" alt="image" src="https://github.com/user-attachments/assets/183e3a66-bb15-4d1c-a5e0-06f22cb180ff" />
+
 ## GRAPH:
+
 <img width="566" height="420" alt="image" src="https://github.com/user-attachments/assets/c21696cb-f670-4fd1-9e84-0b10c92daadb" />
 
 
