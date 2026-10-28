@@ -47,107 +47,93 @@ Use the trained model to predict  for a new input value .
 ### Name:Janani saraswathi S
 
 ### Register Number:212225230110
-
 ```
-#%% packages
-from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-import seaborn as sns
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 
-
-#%% import data
-df=pd.read_csv("C:\\Users\\PriyaB\\Downloads\\PyTorch-Ultimate-2023---From-Basics-to-Cutting-Edge\\010_DeepLearningIntro\\Exp-1.csv")
+df = pd.read_csv("C:\\Users\\acer\\Downloads\\Exp-1.csv")
 df
 
+x = df[["Input"]].values
+y = df[["Output"]].values
 
-# %% separate independent / dependent features
-x=df[["Input"]].values
-y=df[["Output"]].values
+x_test, x_train, y_test, y_train = train_test_split(x,y,test_size=0.4,random_state=42)
 
-# %% Train / Test Split
-xt,xst,yt,yst=train_test_split(x,y,test_size=0.2,random_state=52) # check if requires_grad is true, false if not directly specified
+scaler1 = MinMaxScaler()
+scaler2 = MinMaxScaler()
 
-
-#%% scale the data
-scale1=MinMaxScaler()
-scale2=MinMaxScaler()
-xt=scale1.fit_transform(xt)
-xst=scale1.transform(xst)
+x_train = scaler1.fit_transform(x_train)
+x_test = scaler2.fit_transform(x_test)
 
 
-xt=torch.FloatTensor(xt)
-xst=torch.FloatTensor(xst)
-yt=torch.FloatTensor(yt)
-yst=torch.FloatTensor(yst)
+x_train1 = torch.FloatTensor(x_train)
+x_test1 = torch.FloatTensor(x_test)
+y_train1 = torch.FloatTensor(y_train)
+y_test1 = torch.FloatTensor(y_test)
 
-
-# %% simple network
-class neuralNetwork(nn.Module):
+class neuralnet(nn.Module):
     def __init__(self):
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(1, 16),
+            nn.Linear(1,20),
             nn.ReLU(),
-            nn.Linear(16, 8),
+            nn.Linear(20,10),
             nn.ReLU(),
-            nn.Linear(8, 1)
-
-
+            nn.Linear(10,1)
         )
-    def forward(self, x):
+    def forward(self,x):
         return self.network(x)
 
-# %% create model
-model=neuralNetwork()
-criterion=nn.MSELoss()
-optimizer=torch.optim.Adam(model.parameters(),lr=0.01)
 
+model = neuralnet()
+criterion =nn.MSELoss()
+optimizer = optim.Adam(model.parameters(),lr=0.001)
 
-
-# %% training
-epochs=5000
-losses=[]
+epochs = 1000
+loss_history = []
 
 for i in range(epochs):
     optimizer.zero_grad()
-    predictions=model(xt)
-    loss=criterion(predictions,yt)
+    pred = model(x_train1)
+    loss = criterion(pred,y_train1)
     loss.backward()
     optimizer.step()
-    if i%100==0:
-        print(f"epoch: {i}, loss: {loss.item()}")
-        losses.append(loss.item())
-# %% prediction
-new_data=torch.FloatTensor([[16]])
-new_data=torch.Tensor(scale1.transform(new_data))
-predictions=model(new_data)
-print(predictions.item())
-# %% test
-xst = torch.FloatTensor(xst)
-yst = torch.FloatTensor(yst)
-with torch.no_grad():
-    predictions_l=model(xst)
-    test_loss=criterion(predictions_l,yst)
-    print(f"test loss: {test_loss.item()}")
 
-# %% plot
-plt.plot(losses)
-plt.xlabel("Epoch")
+    loss_history.append(loss.item())
+
+    if i%100==0:
+        print(f"Epoch{i}:",loss.item())
+
+
+with torch.no_grad():
+    pred=model(x_test1)
+    loss=criterion(pred,y_test1)
+    print(loss.item())
+
+model.eval()
+
+input = torch.tensor(scaler1.transform([[22]]), dtype=torch.float32)
+
+with torch.no_grad():
+    pred = model(input)
+
+print(pred.item())
+
+import matplotlib.pyplot as plt
+
+plt.plot(range(1, epochs + 1), loss_history)
+plt.xlabel("Epochs")
 plt.ylabel("Loss")
-plt.title("Loss during training")
+plt.title("Training Loss vs Epochs")
+plt.grid(True)
 plt.show()
 
-
-
-
-```
-
+**
 ### Dataset Information
 <img width="570" height="591" alt="image" src="https://github.com/user-attachments/assets/6eac646e-3cf4-49ac-a440-c9e16e0f8de0" />
 
